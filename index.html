@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mikhaell Galvão - Cartão Online</title>
+    <!-- Carrega o Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define a fonte Inter para todo o corpo do documento */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Cor de fundo suave */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Estilos específicos para as cores da Galvão Drones */
+        .bg-galvao-orange {
+            background-color: #EF7E13;
+        }
+        .text-galvao-orange {
+            color: #EF7E13;
+        }
+        .bg-galvao-green {
+            background-color: #0E5847;
+        }
+        .text-galvao-green {
+            color: #0E5847;
+        }
+
+        /* Estilo para o contêiner principal */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 20px; /* Cantos arredondados */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo para os botões de compartilhamento */
+        .share-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .share-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Estilo para o toggle de cartão */
+        .toggle-button {
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .toggle-button.active {
+            background-color: #0E5847; /* Verde escuro para ativo */
+            color: white;
+        }
+        .toggle-button:not(.active) {
+            background-color: #e2e8f0; /* Cinza claro para inativo */
+            color: #4a5568;
+        }
+
+        /* Estilo para as seções (cartão e login) */
+        .section {
+            display: none; /* Esconde todas as seções por padrão */
+        }
+        .section.active {
+            display: block; /* Mostra a seção ativa */
+        }
+
+        /* Estilo para inputs e botões do formulário */
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        .form-button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .form-button:hover {
+            opacity: 0.9;
+        }
+        /* Estilo para a logo da Galvão Drones */
+        .galvao-logo {
+            width: 120px; /* Definido para 120px para igualar a imagem pessoal */
+            height: 120px; /* Definido para 120px para igualar a imagem pessoal */
+            object-fit: contain; /* Garante que a imagem se ajuste sem distorcer */
+        }
+
+        /* Estilo para o spinner de carregamento */
+        .loading-spinner {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #EF7E13; /* Galvao Orange */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+            margin: 40px auto;
+            display: none; /* Hidden by default */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* O layout já é responsivo por padrão com Tailwind e meta viewport.
+           As classes de utilidade do Tailwind (e.g., `md:grid-cols-2`)
+           garantem que o layout se adapte a diferentes tamanhos de tela. */
+    </style>
+</head>
+<body class="selection:bg-galvao-orange selection:text-white">
+    <div class="container">
+        <!-- Cabeçalho com botões de navegação -->
+        <div class="p-6 bg-gray-100 border-b border-gray-200 flex justify-between items-center rounded-t-20px">
+            <div class="flex space-x-3">
+                <button id="showCardBtn" class="toggle-button active">Cartão de Visita</button>
+                <button id="showLoginBtn" class="toggle-button">Área Pessoal</button>
+            </div>
+        </div>
+
+        <!-- Seção do Cartão de Visita -->
+        <div id="cardSection" class="section active p-8">
+            <div class="flex justify-center mb-6">
+                <div class="flex bg-gray-200 rounded-full p-1 shadow-inner">
+                    <button id="personalCardToggle" class="toggle-button active text-sm">Pessoal</button>
+                    <button id="enterpriseCardToggle" class="toggle-button text-sm">Empresarial</button>
+                </div>
+            </div>
+
+            <!-- Cartão Pessoal -->
+            <div id="personalCard" class="card-content">
+                <div class="text-center mb-6">
+                    <img src="https://i.imgur.com/xTprxOF.png" alt="Foto de Mikhaell Galvão" class="rounded-full mx-auto mb-4 border-4 border-gray-300 shadow-lg w-[120px] h-[120px]">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Mikhaell Galvão</h1>
+                    <p class="text-lg text-gray-600">Fundador da Galvão Drones | Programador em C++</p>
+                    <p class="text-md text-gray-500 mt-2">Com 27 anos, sou casado e pai de 2 filhos. Atuo com manutenção elétrica e eletrônica desde 2012 e sou especialista em drones desde 2017.</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg mb-6 shadow-sm">
+                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">E-mail:</strong> mikhaell.erik@gmail.com</p>
+                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">Site:</strong> <a href="https://lnk.bio/galvaodrones" target="_blank" class="text-blue-600 hover:underline">lnk.bio/galvaodrones</a></p>
+                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">Instagram:</strong> <a href="https://www.instagram.com/mikhaell_galvao" target="_blank" class="text-blue-600 hover:underline">@mikhaell_galvao</a></p>
+                    <p class="text-sm text-gray-700"><strong class="text-galvao-orange">WhatsApp:</strong> (62) 98471-0639</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <button id="sharePersonalWhatsapp" class="share-button bg-green-500 text-white hover:bg-green-600">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.557-3.84-1.557-5.884C.187 5.57 5.72 0 12.427 0c3.096 0 6.012 1.248 8.242 3.479 2.232 2.231 3.479 5.147 3.479 8.244 0 6.706-5.532 12.24-12.24 12.24-.047 0-.093 0-.14 0l-6.598 1.705-.007.002zM12.427 1.815c-5.791 0-10.53 4.739-10.53 10.53 0 2.101.684 4.073 1.988 5.75l-1.347 4.908 5.025-1.301c1.542.843 3.256 1.285 5.064 1.285 5.791 0 10.53-4.739 10.53-10.53S18.218 1.815 12.427 1.815zm4.097 10.017c-.12-.198-.44-.319-.92-.559-.48-.24-.96-.38-1.39-.44-.43-.06-.74-.06-1.05.06-.31.12-.66.55-.81.66-.15.12-.31.12-.58.06-.27-.06-.71-.25-1.35-.83-.49-.44-.82-.98-1.09-1.44-.27-.46-.03-.43.19-.66.19-.21.27-.38.38-.55.12-.19.06-.31-.03-.49-.09-.19-.81-1.98-1.11-2.71-.29-.7-.58-.58-.81-.58-.23 0-.49-.03-.74-.03-.25 0-.66.09-.96.44-.3.35-1.15 1.12-1.15 2.73 0 1.61 1.18 3.16 1.35 3.39.17.23 2.32 3.56 5.61 4.81 3.28 1.25 3.28.84 3.87.78.59-.06 1.8-.74 2.05-1.47.25-.74.25-1.37.17-1.47-.08-.1-.29-.16-.61-.3z"/></svg>
+                        WhatsApp
+                    </button>
+                    <button id="sharePersonalEmail" class="share-button bg-blue-500 text-white hover:bg-blue-600">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
+                        Email
+                    </button>
+                    <button id="sharePersonalAllInfo" class="share-button bg-gray-300 text-gray-800 hover:bg-gray-400 col-span-full">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.78l-7.05-4.14c.06-.2.1-.41.1-.64s-.04-.44-.1-.64l7.05-4.14c.52.48 1.2.78 1.96.78 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .23.04.44.1.64L7.05 9.82c-.52-.48-1.2-.78-1.96-.78-1.66 0-3 1.34-3 3s1.34 3 3 3c.76 0 1.44-.3 1.96-.78l7.05 4.14c-.06.2-.1.41-.1.64s.04.44.1.64l-7.05 4.14c-.52-.48-1.2-.78-1.96-.78-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3z"/></svg>
+                        Compartilhar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cartão Empresarial (Galvão Drones) -->
+            <div id="enterpriseCard" class="card-content hidden">
+                <div class="text-center mb-6">
+                    <div class="flex items-center justify-center mb-4">
+                        <!-- Imagem do logo da Galvão Drones -->
+                        <img src="https://i.imgur.com/ny5U9KV.png" alt="Logo Galvão Drones" class="galvao-logo mr-3">
+                    </div>
+                    <p class="text-lg text-gray-700 mb-2">
+                        Na Galvão Drones, somos pioneiros em soluções completas para o universo dos drones em Goiânia - GO. Liderados por Mikhaell Galvão, técnico especialista DJI, oferecemos vendas, manutenção, treinamentos e consultoria técnica para modelos DJI Consumer, Enterprise, FPV e Agrícolas. Nosso compromisso é com a excelência e a inovação, transformando o futuro com tecnologia de ponta e conteúdo visual impactante.
+                    </p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg mb-6 shadow-sm">
+                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">CNPJ:</strong> 60.102.179/0001-10</p>
+                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">E-mail:</strong> contato@galvaodrones.com.br</p>
+                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">Site:</strong> <a href="https://www.galvaodrones.com.br" target="_blank" class="text-blue-600 hover:underline">www.galvaodrones.com.br</a></p>
+                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">Instagram:</strong> <a href="https://www.instagram.com/galvaodrones" target="_blank" class="text-blue-600 hover:underline">@galvaodrones</a></p>
+                    <p class="text-sm text-gray-700"><strong class="text-galvao-orange">WhatsApp:</strong> (62) 3636-0668</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <button id="shareEnterpriseWhatsapp" class="share-button bg-green-500 text-white hover:bg-green-600">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.557-3.84-1.557-5.884C.187 5.57 5.72 0 12.427 0c3.096 0 6.012 1.248 8.242 3.479 2.232 2.231 3.479 5.147 3.479 8.244 0 6.706-5.532 12.24-12.24 12.24-.047 0-.093 0-.14 0l-6.598 1.705-.007.002zM12.427 1.815c-5.791 0-10.53 4.739-10.53 10.53 0 2.101.684 4.073 1.988 5.75l-1.347 4.908 5.025-1.301c1.542.843 3.256 1.285 5.064 1.285 5.791 0 10.53-4.739 10.53-10.53S18.218 1.815 12.427 1.815zm4.097 10.017c-.12-.198-.44-.319-.92-.559-.48-.24-.96-.38-1.39-.44-.43-.06-.74-.06-1.05.06-.31.12-.66.55-.81.66-.15.12-.31.12-.58.06-.27-.06-.71-.25-1.35-.83-.49-.44-.82-.98-1.09-1.44-.27-.46-.03-.43.19-.66.19-.21.27-.38.38-.55.12-.19.06-.31-.03-.49-.09-.19-.81-1.98-1.11-2.71-.29-.7-.58-.58-.81-.58-.23 0-.49-.03-.74-.03-.25 0-.66.09-.96.44-.3.35-1.15 1.12-1.15 2.73 0 1.61 1.18 3.16 1.35 3.39.17.23 2.32 3.56 5.61 4.81 3.28 1.25 3.28.84 3.87.78.59-.06 1.8-.74 2.05-1.47.25-.74.25-1.37.17-1.47-.08-.1-.29-.16-.61-.3z"/></svg>
+                        WhatsApp
+                    </button>
+                    <button id="shareEnterpriseEmail" class="share-button bg-blue-500 text-white hover:bg-blue-600">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
+                        Email
+                    </button>
+                    <button id="shareEnterpriseAllInfo" class="share-button bg-gray-300 text-gray-800 hover:bg-gray-400 col-span-full">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.78l-7.05-4.14c.06-.2.1-.41.1-.64s-.04-.44-.1-.64l7.05-4.14c.52.48 1.2.78 1.96.78 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .23.04.44.1.64L7.05 9.82c-.52-.48-1.2-.78-1.96-.78-1.66 0-3 1.34-3 3s1.34 3 3 3c.76 0 1.44-.3 1.96-.78l7.05 4.14c-.06.2-.1.41-.1.64s.04.44.1.64l-7.05 4.14c-.52-.48-1.2-.78-1.96-.78-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3z"/></svg>
+                        Compartilhar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Login e Área Pessoal -->
+        <div id="loginSection" class="section p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Acesso à Área Pessoal</h2>
+
+            <!-- Formulário de Login -->
+            <div id="loginForm" class="mb-6">
+                <!-- Removido o texto de instrução da senha -->
+                <input type="text" id="username" class="form-input" placeholder="Usuário">
+                <input type="password" id="password" class="form-input" placeholder="Senha">
+                <button id="loginBtn" class="form-button bg-galvao-green">Entrar</button>
+                <p id="loginMessage" class="text-red-500 text-center mt-3 hidden">Usuário ou senha incorretos.</p>
+            </div>
+
+            <!-- Spinner de Carregamento -->
+            <div id="loadingSpinner" class="loading-spinner"></div>
+
+            <!-- Área Pessoal (visível após o login) -->
+            <div id="personalArea" class="hidden text-center">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Bem-vindo, Mikhaell!</h3>
+                <p class="text-gray-700 mb-6">Aqui você pode acessar seus projetos, anotações e ideias pessoais.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <button class="form-button bg-blue-500 hover:bg-blue-600">Meus Projetos</button>
+                    <button class="form-button bg-blue-500 hover:bg-blue-600">Minhas Anotações</button>
+                    <button class="form-button bg-blue-500 hover:bg-blue-600">Minhas Ideias</button>
+                    <button class="form-button bg-blue-500 hover:bg-blue-600">Recursos Úteis</button>
+                    <button class="form-button bg-blue-500 hover:bg-blue-600">Configurações</button>
+                </div>
+                <button id="logoutBtn" class="form-button bg-red-500 hover:bg-red-600 mt-4">Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Seletores de elementos
+        const showCardBtn = document.getElementById('showCardBtn');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const cardSection = document.getElementById('cardSection');
+        const loginSection = document.getElementById('loginSection');
+
+        const personalCardToggle = document.getElementById('personalCardToggle');
+        const enterpriseCardToggle = document.getElementById('enterpriseCardToggle');
+        const personalCard = document.getElementById('personalCard');
+        const enterpriseCard = document.getElementById('enterpriseCard');
+
+        const sharePersonalWhatsapp = document.getElementById('sharePersonalWhatsapp');
+        const sharePersonalEmail = document.getElementById('sharePersonalEmail');
+        const sharePersonalAllInfo = document.getElementById('sharePersonalAllInfo');
+
+        const shareEnterpriseWhatsapp = document.getElementById('shareEnterpriseWhatsapp');
+        const shareEnterpriseEmail = document.getElementById('shareEnterpriseEmail');
+        const shareEnterpriseAllInfo = document.getElementById('shareEnterpriseAllInfo');
+
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginMessage = document.getElementById('loginMessage');
+        const personalArea = document.getElementById('personalArea');
+        const loginForm = document.getElementById('loginForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Conteúdo completo para exibição nos cartões
+        const personalInfoDisplay = `
+Mikhaell Galvão
+Fundador da Galvão Drones
+Programador em C++
+Com 27 anos, sou casado e pai de 2 filhos. Atuo com manutenção elétrica e eletrônica desde 2012 e sou especialista em drones desde 2017.
+E-mail: mikhaell.erik@gmail.com
+Site: lnk.bio/galvaodrones
+Instagram: @mikhaell_galvao
+WhatsApp: (62) 98471-0639
+`;
+
+        const enterpriseInfoDisplay = `
+Na Galvão Drones, somos pioneiros em soluções completas para o universo dos drones em Goiânia - GO. Liderados por Mikhaell Galvão, técnico especialista DJI, oferecemos vendas, manutenção, treinamentos e consultoria técnica para modelos DJI Consumer, Enterprise, FPV e Agrícolas. Nosso compromisso é com a excelência e a inovação, transformando o futuro com tecnologia de ponta e conteúdo visual impactante.
+CNPJ: 60.102.179/0001-10
+E-mail: contato@galvaodrones.com.br
+Site: www.galvaodrones.com.br
+Instagram: @galvaodrones
+WhatsApp: (62) 3636-0668
+`;
+
+        // Conteúdo simplificado para compartilhamento (sem o breve resumo/apresentação)
+        const personalInfoShareable = `
+Mikhaell Galvão
+Fundador da Galvão Drones
+Programador em C++
+E-mail: mikhaell.erik@gmail.com
+Site: lnk.bio/galvaodrones
+Instagram: @mikhaell_galvao
+WhatsApp: (62) 98471-0639
+`;
+
+        const enterpriseInfoShareable = `
+Galvão Drones
+CNPJ: 60.102.179/0001-10
+E-mail: contato@galvaodrones.com.br
+Site: www.galvaodrones.com.br
+Instagram: @galvaodrones
+WhatsApp: (62) 3636-0668
+`;
+
+        // Função para exibir mensagens de alerta personalizadas (substitui alert())
+        function alertMessage(message, type) {
+            const messageBox = document.createElement('div');
+            messageBox.textContent = message;
+            messageBox.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-lg text-white z-50 transition-transform duration-300 transform translate-y-full`;
+
+            if (type === 'success') {
+                messageBox.classList.add('bg-green-500');
+            } else if (type === 'error') {
+                messageBox.classList.add('bg-red-500');
+            } else {
+                messageBox.classList.add('bg-gray-700');
+            }
+
+            document.body.appendChild(messageBox);
+
+            // Animação de entrada
+            setTimeout(() => {
+                messageBox.style.transform = 'translateY(0)';
+            }, 100);
+
+            // Animação de saída e remoção
+            setTimeout(() => {
+                messageBox.style.transform = 'translateY(100%)';
+                messageBox.addEventListener('transitionend', () => messageBox.remove());
+            }, 3000);
+        }
+
+
+        // Event Listeners para alternar entre seções (Cartão / Login)
+        showCardBtn.addEventListener('click', () => {
+            cardSection.classList.add('active');
+            loginSection.classList.remove('active');
+            showCardBtn.classList.add('active');
+            showLoginBtn.classList.remove('active');
+        });
+
+        showLoginBtn.addEventListener('click', () => {
+            loginSection.classList.add('active');
+            cardSection.classList.remove('active');
+            showLoginBtn.classList.add('active');
+            showCardBtn.classList.remove('active');
+        });
+
+        // Event Listeners para alternar entre Cartão Pessoal / Empresarial
+        personalCardToggle.addEventListener('click', () => {
+            personalCard.classList.remove('hidden');
+            enterpriseCard.classList.add('hidden');
+            personalCardToggle.classList.add('active');
+            enterpriseCardToggle.classList.remove('active');
+        });
+
+        enterpriseCardToggle.addEventListener('click', () => {
+            enterpriseCard.classList.remove('hidden');
+            personalCard.classList.add('hidden');
+            enterpriseCardToggle.classList.add('active');
+            personalCardToggle.classList.remove('active');
+        });
+
+        // Event Listeners para compartilhamento do Cartão Pessoal
+        sharePersonalWhatsapp.addEventListener('click', () => {
+            const text = encodeURIComponent(personalInfoShareable);
+            window.open(`https://wa.me/5562984710639?text=${text}`, '_blank');
+        });
+
+        sharePersonalEmail.addEventListener('click', () => {
+            const subject = encodeURIComponent('Contato de Mikhaell Galvão');
+            const body = encodeURIComponent(personalInfoShareable);
+            window.open(`mailto:mikhaell.erik@gmail.com?subject=${subject}&body=${body}`);
+        });
+
+        // Event Listener para compartilhar todas as informações pessoais via WhatsApp (sem número fixo)
+        sharePersonalAllInfo.addEventListener('click', () => {
+            const text = encodeURIComponent(personalInfoShareable);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+        });
+
+        // Event Listeners para compartilhamento do Cartão Empresarial
+        shareEnterpriseWhatsapp.addEventListener('click', () => {
+            const text = encodeURIComponent(enterpriseInfoShareable);
+            window.open(`https://wa.me/556236360668?text=${text}`, '_blank');
+        });
+
+        shareEnterpriseEmail.addEventListener('click', () => {
+            const subject = encodeURIComponent('Contato da Galvão Drones');
+            const body = encodeURIComponent(enterpriseInfoShareable);
+            window.open(`mailto:contato@galvaodrones.com.br?subject=${subject}&body=${body}`);
+        });
+
+        // Event Listener para compartilhar todas as informações empresariais via WhatsApp (sem número fixo)
+        shareEnterpriseAllInfo.addEventListener('click', () => {
+            const text = encodeURIComponent(enterpriseInfoShareable);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+        });
+
+        // Lógica de Login (simples, apenas para demonstração)
+        loginBtn.addEventListener('click', () => {
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            // Credenciais hardcoded para demonstração
+            // Senha alterada para 'mk0639'
+            if (username === 'mikhaell' && password === 'mk0639') {
+                loginForm.classList.add('hidden');
+                loginMessage.classList.add('hidden');
+                loadingSpinner.style.display = 'block';
+
+                setTimeout(() => {
+                    loadingSpinner.style.display = 'none';
+                    personalArea.classList.remove('hidden');
+                    alertMessage('Login realizado com sucesso!', 'success');
+                }, 2000);
+            } else {
+                loginMessage.classList.remove('hidden');
+                alertMessage('Usuário ou senha incorretos.', 'error');
+            }
+        });
+
+        // Lógica de Logout
+        logoutBtn.addEventListener('click', () => {
+            personalArea.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            usernameInput.value = '';
+            passwordInput.value = '';
+            alertMessage('Você saiu da área pessoal.', 'info');
+        });
+
+    </script>
+</body>
+</html>

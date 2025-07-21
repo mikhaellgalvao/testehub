@@ -3,454 +3,567 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikhaell Galvão - Cartão Online</title>
-    <!-- Carrega o Tailwind CSS para estilização rápida e responsiva -->
+    <title>Sistema de Gestão - Galvão Drones</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide-static@latest/dist/lucide.js"></script>
     <style>
-        /* Define a fonte Inter para todo o corpo do documento */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5; /* Cor de fundo suave */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        /* Estilos específicos para as cores da Galvão Drones */
-        .bg-galvao-orange {
-            background-color: #EF7E13;
-        }
-        .text-galvao-orange {
-            color: #EF7E13;
-        }
-        .bg-galvao-green {
-            background-color: #0E5847;
-        }
-        .text-galvao-green {
-            color: #0E5847;
-        }
-
-        /* Estilo para o contêiner principal */
-        .container {
-            max-width: 600px;
-            width: 100%;
-            background-color: #ffffff;
-            border-radius: 20px; /* Cantos arredondados */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Sombra suave */
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Estilo para os botões de compartilhamento */
-        .share-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .share-button:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Estilo para o toggle de cartão */
-        .toggle-button {
-            padding: 10px 20px;
-            border-radius: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        .toggle-button.active {
-            background-color: #0E5847; /* Verde escuro para ativo */
-            color: white;
-        }
-        .toggle-button:not(.active) {
-            background-color: #e2e8f0; /* Cinza claro para inativo */
-            color: #4a5568;
-        }
-
-        /* Estilo para as seções (cartão e login) */
-        .section {
-            display: none; /* Esconde todas as seções por padrão */
-        }
-        .section.active {
-            display: block; /* Mostra a seção ativa */
-        }
-
-        /* Estilo para inputs e botões do formulário */
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e0;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-        .form-button {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 700;
-            color: white;
-            transition: background-color 0.3s ease;
-        }
-        .form-button:hover {
-            opacity: 0.9;
-        }
-        /* Estilo para a logo da Galvão Drones */
-        .galvao-logo {
-            width: 120px; /* Definido para 120px para igualar a imagem pessoal */
-            height: 120px; /* Definido para 120px para igualar a imagem pessoal */
-            object-fit: contain; /* Garante que a imagem se ajuste sem distorcer */
-        }
-
-        /* Estilo para o spinner de carregamento */
-        .loading-spinner {
-            border: 8px solid #f3f3f3; /* Light grey */
-            border-top: 8px solid #EF7E13; /* Galvao Orange */
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 2s linear infinite;
-            margin: 40px auto;
-            display: none; /* Hidden by default */
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* O layout já é responsivo por padrão com Tailwind e meta viewport.
-           As classes de utilidade do Tailwind (e.g., `md:grid-cols-2`)
-           garantem que o layout se adapte a diferentes tamanhos de tela. */
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #0E5847; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #EF7E13; }
+        .bg-brand-green { background-color: #0E5847; }
+        .bg-brand-orange { background-color: #EF7E13; }
+        .text-brand-green { color: #0E5847; }
+        .text-brand-orange { color: #EF7E13; }
+        .border-brand-orange { border-color: #EF7E13; }
+        .focus\:ring-brand-orange:focus { --tw-ring-color: #EF7E13; }
+        .page { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .admin-only, .employee-only { display: none; }
+        @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        .toast-in { animation: slideInUp 0.5s ease-out forwards; }
+        .toast-out { animation: fadeOut 0.5s ease-in forwards; }
     </style>
 </head>
-<body class="selection:bg-galvao-orange selection:text-white">
-    <div class="container">
-        <!-- Cabeçalho com botões de navegação -->
-        <div class="p-6 bg-gray-100 border-b border-gray-200 flex justify-between items-center rounded-t-20px">
-            <div class="flex space-x-3">
-                <button id="showCardBtn" class="toggle-button active">Cartão de Visita</button>
-                <button id="showLoginBtn" class="toggle-button">Área Pessoal</button>
+<body class="bg-gray-100">
+
+    <!-- Login Page -->
+    <div id="login-page" class="flex items-center justify-center h-screen bg-brand-green p-4">
+        <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-2xl">
+            <div class="flex justify-center">
+                 <img src="https://www.galvaodrones.com.br/images/logo-galvao-drones-branca.png" alt="Logo Galvão Drones" class="h-16 w-auto bg-brand-green p-2 rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/250x60/0E5847/FFFFFF?text=Galv%C3%A3o+Drones';">
             </div>
-        </div>
-
-        <!-- Seção do Cartão de Visita -->
-        <div id="cardSection" class="section active p-8">
-            <div class="flex justify-center mb-6">
-                <div class="flex bg-gray-200 rounded-full p-1 shadow-inner">
-                    <button id="personalCardToggle" class="toggle-button active text-sm">Pessoal</button>
-                    <button id="enterpriseCardToggle" class="toggle-button text-sm">Empresarial</button>
-                </div>
-            </div>
-
-            <!-- Cartão Pessoal -->
-            <div id="personalCard" class="card-content">
-                <div class="text-center mb-6">
-                    <img src="https://i.imgur.com/xTprxOF.png" alt="Foto de Mikhaell Galvão" class="rounded-full mx-auto mb-4 border-4 border-gray-300 shadow-lg w-[120px] h-[120px]">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Mikhaell Galvão</h1>
-                    <p class="text-lg text-gray-600">Fundador da Galvão Drones | Programador em C++</p>
-                    <p class="text-md text-gray-500 mt-2">Com 27 anos, sou casado e pai de 2 filhos. Atuo com manutenção elétrica e eletrônica desde 2012 e sou especialista em drones desde 2017.</p>
-                </div>
-
-                <div class="bg-gray-50 p-4 rounded-lg mb-6 shadow-sm">
-                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">E-mail:</strong> mikhaell.erik@gmail.com</p>
-                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">Site:</strong> <a href="https://lnk.bio/galvaodrones" target="_blank" class="text-blue-600 hover:underline">lnk.bio/galvaodrones</a></p>
-                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">Instagram:</strong> <a href="https://www.instagram.com/mikhaell_galvao" target="_blank" class="text-blue-600 hover:underline">@mikhaell_galvao</a></p>
-                    <p class="text-sm text-gray-700"><strong class="text-galvao-orange">WhatsApp:</strong> (62) 98471-0639</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <button id="sharePersonalWhatsapp" class="share-button bg-green-500 text-white hover:bg-green-600">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.557-3.84-1.557-5.884C.187 5.57 5.72 0 12.427 0c3.096 0 6.012 1.248 8.242 3.479 2.232 2.231 3.479 5.147 3.479 8.244 0 6.706-5.532 12.24-12.24 12.24-.047 0-.093 0-.14 0l-6.598 1.705-.007.002zM12.427 1.815c-5.791 0-10.53 4.739-10.53 10.53 0 2.101.684 4.073 1.988 5.75l-1.347 4.908 5.025-1.301c1.542.843 3.256 1.285 5.064 1.285 5.791 0 10.53-4.739 10.53-10.53S18.218 1.815 12.427 1.815zm4.097 10.017c-.12-.198-.44-.319-.92-.559-.48-.24-.96-.38-1.39-.44-.43-.06-.74-.06-1.05.06-.31.12-.66.55-.81.66-.15.12-.31.12-.58.06-.27-.06-.71-.25-1.35-.83-.49-.44-.82-.98-1.09-1.44-.27-.46-.03-.43.19-.66.19-.21.27-.38.38-.55.12-.19.06-.31-.03-.49-.09-.19-.81-1.98-1.11-2.71-.29-.7-.58-.58-.81-.58-.23 0-.49-.03-.74-.03-.25 0-.66.09-.96.44-.3.35-1.15 1.12-1.15 2.73 0 1.61 1.18 3.16 1.35 3.39.17.23 2.32 3.56 5.61 4.81 3.28 1.25 3.28.84 3.87.78.59-.06 1.8-.74 2.05-1.47.25-.74.25-1.37.17-1.47-.08-.1-.29-.16-.61-.3z"/></svg>
-                        WhatsApp
-                    </button>
-                    <button id="sharePersonalEmail" class="share-button bg-blue-500 text-white hover:bg-blue-600">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
-                        Email
-                    </button>
-                    <button id="sharePersonalAllInfo" class="share-button bg-gray-300 text-gray-800 hover:bg-gray-400 col-span-full">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.78l-7.05-4.14c.06-.2.1-.41.1-.64s-.04-.44-.1-.64l7.05-4.14c.52.48 1.2.78 1.96.78 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .23.04.44.1.64L7.05 9.82c-.52-.48-1.2-.78-1.96-.78-1.66 0-3 1.34-3 3s1.34 3 3 3c.76 0 1.44-.3 1.96-.78l7.05 4.14c-.06.2-.1.41-.1.64s.04.44.1.64l-7.05 4.14c-.52-.48-1.2-.78-1.96-.78-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3z"/></svg>
-                        Compartilhar
-                    </button>
-                </div>
-            </div>
-
-            <!-- Cartão Empresarial (Galvão Drones) -->
-            <div id="enterpriseCard" class="card-content hidden">
-                <div class="text-center mb-6">
-                    <div class="flex items-center justify-center mb-4">
-                        <!-- Imagem do logo da Galvão Drones -->
-                        <img src="https://i.imgur.com/ny5U9KV.png" alt="Logo Galvão Drones" class="galvao-logo mr-3">
-                    </div>
-                    <p class="text-lg text-gray-700 mb-2">
-                        Na Galvão Drones, somos pioneiros em soluções completas para o universo dos drones em Goiânia - GO. Liderados por Mikhaell Galvão, técnico especialista DJI, oferecemos vendas, manutenção, treinamentos e consultoria técnica para modelos DJI Consumer, Enterprise, FPV e Agrícolas. Nosso compromisso é com a excelência e a inovação, transformando o futuro com tecnologia de ponta e conteúdo visual impactante.
-                    </p>
-                </div>
-
-                <div class="bg-gray-50 p-4 rounded-lg mb-6 shadow-sm">
-                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">CNPJ:</strong> 60.102.179/0001-10</p>
-                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">E-mail:</strong> contato@galvaodrones.com.br</p>
-                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">Site:</strong> <a href="https://www.galvaodrones.com.br" target="_blank" class="text-blue-600 hover:underline">www.galvaodrones.com.br</a></p>
-                    <p class="text-sm text-gray-700 mb-2"><strong class="text-galvao-orange">Instagram:</strong> <a href="https://www.instagram.com/galvaodrones" target="_blank" class="text-blue-600 hover:underline">@galvaodrones</a></p>
-                    <p class="text-sm text-gray-700"><strong class="text-galvao-orange">WhatsApp:</strong> (62) 3636-0668</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <button id="shareEnterpriseWhatsapp" class="share-button bg-green-500 text-white hover:bg-green-600">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.557-3.84-1.557-5.884C.187 5.57 5.72 0 12.427 0c3.096 0 6.012 1.248 8.242 3.479 2.232 2.231 3.479 5.147 3.479 8.244 0 6.706-5.532 12.24-12.24 12.24-.047 0-.093 0-.14 0l-6.598 1.705-.007.002zM12.427 1.815c-5.791 0-10.53 4.739-10.53 10.53 0 2.101.684 4.073 1.988 5.75l-1.347 4.908 5.025-1.301c1.542.843 3.256 1.285 5.064 1.285 5.791 0 10.53-4.739 10.53-10.53S18.218 1.815 12.427 1.815zm4.097 10.017c-.12-.198-.44-.319-.92-.559-.48-.24-.96-.38-1.39-.44-.43-.06-.74-.06-1.05.06-.31.12-.66.55-.81.66-.15.12-.31.12-.58.06-.27-.06-.71-.25-1.35-.83-.49-.44-.82-.98-1.09-1.44-.27-.46-.03-.43.19-.66.19-.21.27-.38.38-.55.12-.19.06-.31-.03-.49-.09-.19-.81-1.98-1.11-2.71-.29-.7-.58-.58-.81-.58-.23 0-.49-.03-.74-.03-.25 0-.66.09-.96.44-.3.35-1.15 1.12-1.15 2.73 0 1.61 1.18 3.16 1.35 3.39.17.23 2.32 3.56 5.61 4.81 3.28 1.25 3.28.84 3.87.78.59-.06 1.8-.74 2.05-1.47.25-.74.25-1.37.17-1.47-.08-.1-.29-.16-.61-.3z"/></svg>
-                        WhatsApp
-                    </button>
-                    <button id="shareEnterpriseEmail" class="share-button bg-blue-500 text-white hover:bg-blue-600">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
-                        Email
-                    </button>
-                    <button id="shareEnterpriseAllInfo" class="share-button bg-gray-300 text-gray-800 hover:bg-gray-400 col-span-full">
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.78l-7.05-4.14c.06-.2.1-.41.1-.64s-.04-.44-.1-.64l7.05-4.14c.52.48 1.2.78 1.96.78 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .23.04.44.1.64L7.05 9.82c-.52-.48-1.2-.78-1.96-.78-1.66 0-3 1.34-3 3s1.34 3 3 3c.76 0 1.44-.3 1.96-.78l7.05 4.14c-.06.2-.1.41-.1.64s.04.44.1.64l-7.05 4.14c-.52-.48-1.2-.78-1.96-.78-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3z"/></svg>
-                        Compartilhar
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Seção de Login e Área Pessoal -->
-        <div id="loginSection" class="section p-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Acesso à Área Pessoal</h2>
-
-            <!-- Formulário de Login -->
-            <div id="loginForm" class="mb-6">
-                <!-- Removido o texto de instrução da senha -->
-                <input type="text" id="username" class="form-input" placeholder="Usuário">
-                <input type="password" id="password" class="form-input" placeholder="Senha">
-                <button id="loginBtn" class="form-button bg-galvao-green">Entrar</button>
-                <p id="loginMessage" class="text-red-500 text-center mt-3 hidden">Usuário ou senha incorretos.</p>
-            </div>
-
-            <!-- Spinner de Carregamento -->
-            <div id="loadingSpinner" class="loading-spinner"></div>
-
-            <!-- Área Pessoal (visível após o login) -->
-            <div id="personalArea" class="hidden text-center">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">Bem-vindo, Mikhaell!</h3>
-                <p class="text-gray-700 mb-6">Aqui você pode acessar seus projetos, anotações e ideias pessoais.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <button class="form-button bg-blue-500 hover:bg-blue-600">Meus Projetos</button>
-                    <button class="form-button bg-blue-500 hover:bg-blue-600">Minhas Anotações</button>
-                    <button class="form-button bg-blue-500 hover:bg-blue-600">Minhas Ideias</button>
-                    <button class="form-button bg-blue-500 hover:bg-blue-600">Recursos Úteis</button>
-                    <button class="form-button bg-blue-500 hover:bg-blue-600">Configurações</button>
-                </div>
-                <button id="logoutBtn" class="form-button bg-red-500 hover:bg-red-600 mt-4">Sair</button>
-            </div>
+            <h2 class="text-2xl font-bold text-center text-gray-900">Acesso ao Sistema</h2>
+            <form id="login-form" class="mt-8 space-y-6">
+                <input id="username" name="username" type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange" placeholder="Usuário">
+                <input id="password" name="password" type="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange" placeholder="Senha">
+                <div id="login-error" class="text-red-500 text-sm text-center hidden">Usuário ou senha inválidos.</div>
+                <button type="submit" class="w-full flex justify-center py-3 px-4 text-sm font-medium rounded-lg text-white bg-brand-orange hover:bg-orange-600 transition duration-300">Entrar</button>
+            </form>
         </div>
     </div>
 
+    <!-- Main Application -->
+    <div id="main-app" class="hidden">
+        <div class="relative flex h-screen bg-gray-200">
+            <!-- Sidebar -->
+            <div id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-brand-green text-white flex flex-col transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:static z-30">
+                <div class="flex items-center justify-center h-20 border-b border-gray-700 flex-shrink-0">
+                     <img src="https://www.galvaodrones.com.br/images/logo-galvao-drones-branca.png" alt="Logo Galvão Drones" class="h-12 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/200x50/0E5847/FFFFFF?text=Galv%C3%A3o+Drones';">
+                </div>
+                <nav class="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
+                    <a href="#" class="flex items-center px-4 py-2 text-white rounded-md nav-link admin-only" data-page="dashboard"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard</a>
+                    <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-md nav-link" data-page="ordens"><i data-lucide="wrench" class="w-5 h-5 mr-3"></i> Ordens de Serviço</a>
+                    <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-md nav-link" data-page="meus-servicos"><i data-lucide="clipboard-check" class="w-5 h-5 mr-3"></i> Meus Serviços</a>
+                    <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700/50 hover:text-white rounded-md nav-link admin-only" data-page="clientes"><i data-lucide="users" class="w-5 h-5 mr-3"></i> Clientes</a>
+                </nav>
+                <div class="p-4 border-t border-gray-700 flex-shrink-0">
+                    <div class="flex items-center"><img id="user-avatar" class="w-10 h-10 rounded-full" src="" alt="Avatar"><div class="ml-3"><p id="user-name" class="text-sm font-semibold text-white"></p><p id="user-role" class="text-xs text-gray-400"></p></div></div>
+                    <button id="logout-button" class="w-full mt-4 flex items-center justify-center px-4 py-2 text-sm text-white bg-brand-orange/80 hover:bg-brand-orange rounded-md"><i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Sair</button>
+                </div>
+            </div>
+            
+            <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
+
+            <div class="flex-1 flex flex-col overflow-hidden">
+                <header class="flex items-center justify-between p-4 bg-white border-b">
+                     <div class="flex items-center">
+                        <button id="menu-button" class="text-gray-500 focus:outline-none lg:hidden"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                        <h1 id="page-title" class="text-xl md:text-2xl font-semibold text-gray-800 ml-2 md:ml-4 truncate"></h1>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative w-full max-w-xs md:max-w-md">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i data-lucide="search" class="w-5 h-5 text-gray-400"></i></span>
+                            <input type="text" class="w-full pl-10 pr-4 py-2 border rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-orange" placeholder="Pesquisar...">
+                        </div>
+                        <div class="relative admin-only">
+                            <button id="notification-button" class="relative text-gray-500 hover:text-brand-orange">
+                                <i data-lucide="bell" class="w-6 h-6"></i>
+                                <span id="notification-badge" class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white hidden"></span>
+                            </button>
+                            <div id="notification-panel" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl overflow-hidden z-10 hidden">
+                                <div class="p-4 font-semibold border-b">Notificações</div>
+                                <div id="notification-list" class="max-h-96 overflow-y-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 md:p-6">
+                    <div id="app-content">
+                        <div id="dashboard" class="page admin-only"></div>
+                        <div id="ordens" class="page hidden"></div>
+                        <div id="meus-servicos" class="page hidden"></div>
+                        <div id="clientes" class="page hidden admin-only"></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Universal Modal -->
+    <div id="universal-modal" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-lg shadow-xl w-full max-w-3xl transform transition-all duration-300 scale-95 opacity-0">
+            <!-- Modal content will be injected here by JS -->
+        </div>
+    </div>
+    <div id="toast-container" class="fixed bottom-0 right-0 p-6 space-y-4 z-50 w-full max-w-sm"></div>
+
     <script>
-        // Seletores de elementos
-        const showCardBtn = document.getElementById('showCardBtn');
-        const showLoginBtn = document.getElementById('showLoginBtn');
-        const cardSection = document.getElementById('cardSection');
-        const loginSection = document.getElementById('loginSection');
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- MOCK DATABASE & STATE ---
+            const state = {
+                users: {
+                    maikhon: { password: '123', role: 'admin', name: 'Maikhon' },
+                    mikhaell: { password: '123', role: 'admin', name: 'Mikhaell Galvão' },
+                    ryan: { password: '123', role: 'admin', name: 'Ryan' },
+                    rafael: { password: '123', role: 'employee', name: 'Rafael' },
+                    fineias: { password: '123', role: 'employee', name: 'Fineias' },
+                },
+                serviceOrders: [
+                    { id: 1160, client: 'DIEGO VIEIRA', equipment: 'MINI 2 SE', service: 'GIMBAL TRAVADO', status: 'Aguardando', assignedTo: null, budget: [], tests: {} },
+                    { id: 1157, client: 'LUCAS PEREIRA', equipment: 'MINI 2/RADIO/1BAT/TRAVA', service: 'TROCA DE BRAÇO', status: 'Aguardando', assignedTo: null, budget: [], tests: {} },
+                    { id: 1155, client: 'RUBENS', equipment: 'MAVIC 2', service: 'NÃO CARREGA', status: 'Em Orçamento', assignedTo: 'rafael', budget: [], tests: {} },
+                    { id: 1154, client: 'PAULO SOUZA', equipment: 'MINI 2', service: 'MORREU', status: 'Aguardando Aprovação', assignedTo: 'maikhon', budget: [{ desc: 'Troca da placa principal', value: '450.00' }], tests: { flight: true, video: 'sim' } }
+                ],
+                notifications: [],
+                currentUser: null,
+                activeModal: null,
+            };
 
-        const personalCardToggle = document.getElementById('personalCardToggle');
-        const enterpriseCardToggle = document.getElementById('enterpriseCardToggle');
-        const personalCard = document.getElementById('personalCard');
-        const enterpriseCard = document.getElementById('enterpriseCard');
+            // --- DOM ELEMENTS ---
+            const loginPage = document.getElementById('login-page');
+            const mainApp = document.getElementById('main-app');
+            const loginForm = document.getElementById('login-form');
+            const appContent = document.getElementById('app-content');
+            const universalModal = document.getElementById('universal-modal');
+            const modalContent = document.getElementById('modal-content');
+            const notificationButton = document.getElementById('notification-button');
+            const notificationPanel = document.getElementById('notification-panel');
 
-        const sharePersonalWhatsapp = document.getElementById('sharePersonalWhatsapp');
-        const sharePersonalEmail = document.getElementById('sharePersonalEmail');
-        const sharePersonalAllInfo = document.getElementById('sharePersonalAllInfo');
+            // --- UTILITY & RENDER FUNCTIONS ---
+            const getStatusBadge = (status) => {
+                const statuses = {
+                    'Aguardando': 'bg-gray-200 text-gray-800', 'Em Orçamento': 'bg-blue-200 text-blue-800',
+                    'Aguardando Aprovação': 'bg-yellow-200 text-yellow-800', 'Aprovado': 'bg-green-200 text-green-800',
+                    'Concluído': 'bg-purple-200 text-purple-800',
+                };
+                return `<span class="px-2 py-1 text-xs font-semibold rounded-full ${statuses[status] || ''}">${status}</span>`;
+            };
 
-        const shareEnterpriseWhatsapp = document.getElementById('shareEnterpriseWhatsapp');
-        const shareEnterpriseEmail = document.getElementById('shareEnterpriseEmail');
-        const shareEnterpriseAllInfo = document.getElementById('shareEnterpriseAllInfo');
-
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('loginBtn');
-        const loginMessage = document.getElementById('loginMessage');
-        const personalArea = document.getElementById('personalArea');
-        const loginForm = document.getElementById('loginForm');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-
-        // Conteúdo completo para exibição nos cartões
-        const personalInfoDisplay = `
-Mikhaell Galvão
-Fundador da Galvão Drones
-Programador em C++
-Com 27 anos, sou casado e pai de 2 filhos. Atuo com manutenção elétrica e eletrônica desde 2012 e sou especialista em drones desde 2017.
-E-mail: mikhaell.erik@gmail.com
-Site: lnk.bio/galvaodrones
-Instagram: @mikhaell_galvao
-WhatsApp: (62) 98471-0639
-`;
-
-        const enterpriseInfoDisplay = `
-Na Galvão Drones, somos pioneiros em soluções completas para o universo dos drones em Goiânia - GO. Liderados por Mikhaell Galvão, técnico especialista DJI, oferecemos vendas, manutenção, treinamentos e consultoria técnica para modelos DJI Consumer, Enterprise, FPV e Agrícolas. Nosso compromisso é com a excelência e a inovação, transformando o futuro com tecnologia de ponta e conteúdo visual impactante.
-CNPJ: 60.102.179/0001-10
-E-mail: contato@galvaodrones.com.br
-Site: www.galvaodrones.com.br
-Instagram: @galvaodrones
-WhatsApp: (62) 3636-0668
-`;
-
-        // Conteúdo simplificado para compartilhamento (sem o breve resumo/apresentação)
-        const personalInfoShareable = `
-Mikhaell Galvão
-Fundador da Galvão Drones
-Programador em C++
-E-mail: mikhaell.erik@gmail.com
-Site: lnk.bio/galvaodrones
-Instagram: @mikhaell_galvao
-WhatsApp: (62) 98471-0639
-`;
-
-        const enterpriseInfoShareable = `
-Galvão Drones
-CNPJ: 60.102.179/0001-10
-E-mail: contato@galvaodrones.com.br
-Site: www.galvaodrones.com.br
-Instagram: @galvaodrones
-WhatsApp: (62) 3636-0668
-`;
-
-        // Função para exibir mensagens de alerta personalizadas (substitui alert())
-        function alertMessage(message, type) {
-            const messageBox = document.createElement('div');
-            messageBox.textContent = message;
-            messageBox.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-lg text-white z-50 transition-transform duration-300 transform translate-y-full`;
-
-            if (type === 'success') {
-                messageBox.classList.add('bg-green-500');
-            } else if (type === 'error') {
-                messageBox.classList.add('bg-red-500');
-            } else {
-                messageBox.classList.add('bg-gray-700');
-            }
-
-            document.body.appendChild(messageBox);
-
-            // Animação de entrada
-            setTimeout(() => {
-                messageBox.style.transform = 'translateY(0)';
-            }, 100);
-
-            // Animação de saída e remoção
-            setTimeout(() => {
-                messageBox.style.transform = 'translateY(100%)';
-                messageBox.addEventListener('transitionend', () => messageBox.remove());
-            }, 3000);
-        }
-
-
-        // Event Listeners para alternar entre seções (Cartão / Login)
-        showCardBtn.addEventListener('click', () => {
-            cardSection.classList.add('active');
-            loginSection.classList.remove('active');
-            showCardBtn.classList.add('active');
-            showLoginBtn.classList.remove('active');
-        });
-
-        showLoginBtn.addEventListener('click', () => {
-            loginSection.classList.add('active');
-            cardSection.classList.remove('active');
-            showLoginBtn.classList.add('active');
-            showCardBtn.classList.remove('active');
-        });
-
-        // Event Listeners para alternar entre Cartão Pessoal / Empresarial
-        personalCardToggle.addEventListener('click', () => {
-            personalCard.classList.remove('hidden');
-            enterpriseCard.classList.add('hidden');
-            personalCardToggle.classList.add('active');
-            enterpriseCardToggle.classList.remove('active');
-        });
-
-        enterpriseCardToggle.addEventListener('click', () => {
-            enterpriseCard.classList.remove('hidden');
-            personalCard.classList.add('hidden');
-            enterpriseCardToggle.classList.add('active');
-            personalCardToggle.classList.remove('active');
-        });
-
-        // Event Listeners para compartilhamento do Cartão Pessoal
-        sharePersonalWhatsapp.addEventListener('click', () => {
-            const text = encodeURIComponent(personalInfoShareable);
-            window.open(`https://wa.me/5562984710639?text=${text}`, '_blank');
-        });
-
-        sharePersonalEmail.addEventListener('click', () => {
-            const subject = encodeURIComponent('Contato de Mikhaell Galvão');
-            const body = encodeURIComponent(personalInfoShareable);
-            window.open(`mailto:mikhaell.erik@gmail.com?subject=${subject}&body=${body}`);
-        });
-
-        // Event Listener para compartilhar todas as informações pessoais via WhatsApp (sem número fixo)
-        sharePersonalAllInfo.addEventListener('click', () => {
-            const text = encodeURIComponent(personalInfoShareable);
-            window.open(`https://wa.me/?text=${text}`, '_blank');
-        });
-
-        // Event Listeners para compartilhamento do Cartão Empresarial
-        shareEnterpriseWhatsapp.addEventListener('click', () => {
-            const text = encodeURIComponent(enterpriseInfoShareable);
-            window.open(`https://wa.me/556236360668?text=${text}`, '_blank');
-        });
-
-        shareEnterpriseEmail.addEventListener('click', () => {
-            const subject = encodeURIComponent('Contato da Galvão Drones');
-            const body = encodeURIComponent(enterpriseInfoShareable);
-            window.open(`mailto:contato@galvaodrones.com.br?subject=${subject}&body=${body}`);
-        });
-
-        // Event Listener para compartilhar todas as informações empresariais via WhatsApp (sem número fixo)
-        shareEnterpriseAllInfo.addEventListener('click', () => {
-            const text = encodeURIComponent(enterpriseInfoShareable);
-            window.open(`https://wa.me/?text=${text}`, '_blank');
-        });
-
-        // Lógica de Login (simples, apenas para demonstração)
-        loginBtn.addEventListener('click', () => {
-            const username = usernameInput.value;
-            const password = passwordInput.value;
-
-            // Credenciais hardcoded para demonstração
-            // Senha alterada para 'mk0639'
-            if (username === 'mikhaell' && password === 'mk0639') {
-                loginForm.classList.add('hidden');
-                loginMessage.classList.add('hidden');
-                loadingSpinner.style.display = 'block';
-
+            const showToast = (message) => {
+                const toastContainer = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = 'bg-brand-green text-white p-4 rounded-lg shadow-lg toast-in flex items-start gap-4';
+                toast.innerHTML = `<div><i data-lucide="bell-ring" class="w-6 h-6 text-brand-orange"></i></div><div class="flex-1">${message}</div>`;
+                toastContainer.appendChild(toast);
+                lucide.createIcons({ nodes: [toast] });
                 setTimeout(() => {
-                    loadingSpinner.style.display = 'none';
-                    personalArea.classList.remove('hidden');
-                    alertMessage('Login realizado com sucesso!', 'success');
-                }, 2000);
-            } else {
-                loginMessage.classList.remove('hidden');
-                alertMessage('Usuário ou senha incorretos.', 'error');
-            }
-        });
+                    toast.classList.replace('toast-in', 'toast-out');
+                    toast.addEventListener('animationend', () => toast.remove());
+                }, 5000);
+            };
+            
+            const formatCurrency = (input) => {
+                let value = input.value.replace(/\D/g, '');
+                if (!value) { input.value = ''; return; }
+                value = (parseInt(value) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                input.value = value;
+            };
 
-        // Lógica de Logout
-        logoutBtn.addEventListener('click', () => {
-            personalArea.classList.add('hidden');
-            loginForm.classList.remove('hidden');
-            usernameInput.value = '';
-            passwordInput.value = '';
-            alertMessage('Você saiu da área pessoal.', 'info');
-        });
+            const renderAll = () => {
+                if (!state.currentUser) return;
+                renderOsPage();
+                renderMyServicesPage();
+                if (state.currentUser.role === 'admin') {
+                    renderDashboardPage();
+                    renderNotifications();
+                }
+            };
+            
+            // --- PAGE RENDERERS ---
+            const renderDashboardPage = () => {
+                const container = document.getElementById('dashboard');
+                const stats = state.serviceOrders.reduce((acc, os) => {
+                    acc[os.status] = (acc[os.status] || 0) + 1;
+                    return acc;
+                }, {});
+                const cardData = [
+                    { title: 'Aguardando', count: stats['Aguardando'] || 0, icon: 'hourglass' },
+                    { title: 'Em Orçamento', count: stats['Em Orçamento'] || 0, icon: 'file-text' },
+                    { title: 'Aguardando Aprovação', count: stats['Aguardando Aprovação'] || 0, icon: 'check-circle' },
+                    { title: 'Concluído', count: stats['Concluído'] || 0, icon: 'flag' }
+                ];
+                container.innerHTML = `<h2 class="text-2xl font-semibold text-gray-800 mb-6">Dashboard</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        ${cardData.map(d => `
+                            <button data-action="show-dashboard-details" data-status="${d.title}" class="bg-white p-6 rounded-lg shadow-md text-left hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">${d.title}</p>
+                                        <p class="text-3xl font-bold text-gray-800">${d.count}</p>
+                                    </div>
+                                    <div class="bg-brand-orange/20 text-brand-orange p-3 rounded-full"><i data-lucide="${d.icon}" class="w-6 h-6"></i></div>
+                                </div>
+                            </button>
+                        `).join('')}
+                    </div>`;
+                lucide.createIcons({ nodes: [container] });
+            };
 
+            const renderOsPage = () => {
+                const container = document.getElementById('ordens');
+                const unassignedOrders = state.serviceOrders.filter(os => os.status === 'Aguardando');
+                container.innerHTML = `
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <h2 class="text-2xl font-semibold text-gray-800">Ordens de Serviço Disponíveis</h2>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-md">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr><th class="px-6 py-3">Nº</th><th class="px-6 py-3">Cliente</th><th class="px-6 py-3">Equipamento</th><th class="px-6 py-3">Serviço</th><th class="px-6 py-3">Ação</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${unassignedOrders.map(os => `
+                                        <tr class="bg-white border-b">
+                                            <td class="px-6 py-4">${os.id}</td><td class="px-6 py-4">${os.client}</td>
+                                            <td class="px-6 py-4">${os.equipment}</td><td class="px-6 py-4">${os.service}</td>
+                                            <td class="px-6 py-4"><button data-action="accept-os" data-os-id="${os.id}" class="bg-brand-orange text-white px-3 py-1 rounded-md text-xs font-semibold hover:bg-orange-600">Aceitar</button></td>
+                                        </tr>
+                                    `).join('') || `<tr><td colspan="5" class="text-center py-8 text-gray-500">Nenhuma ordem de serviço disponível.</td></tr>`}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>`;
+            };
+
+            const renderMyServicesPage = () => {
+                const container = document.getElementById('meus-servicos');
+                const isAdmin = state.currentUser.role === 'admin';
+                const myServices = isAdmin 
+                    ? state.serviceOrders.filter(os => os.assignedTo !== null)
+                    : state.serviceOrders.filter(os => os.assignedTo === state.currentUser.username);
+
+                container.innerHTML = `
+                    <div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-semibold text-gray-800">Meus Serviços</h2></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${myServices.map(os => `
+                            <div class="bg-white rounded-lg shadow-md p-5 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-start">
+                                        <h3 class="font-bold text-lg text-gray-800">OS #${os.id} - ${os.client}</h3>
+                                        ${getStatusBadge(os.status)}
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">${os.equipment}</p>
+                                    <p class="text-sm font-medium text-gray-700 mt-2">${os.service}</p>
+                                    ${isAdmin ? `<p class="text-xs text-gray-500 mt-3">Responsável: <span class="font-semibold">${os.assignedTo}</span></p>` : ''}
+                                </div>
+                                <div class="mt-4 pt-4 border-t flex gap-2">
+                                    <button data-action="open-budget" data-os-id="${os.id}" class="flex-1 bg-blue-500 text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-blue-600">Orçamento</button>
+                                    ${isAdmin ? `<button data-action="open-transfer" data-os-id="${os.id}" class="bg-gray-600 text-white px-3 py-2 rounded-md text-sm font-semibold hover:bg-gray-700">Transferir</button>` : ''}
+                                </div>
+                            </div>
+                        `).join('') || `<div class="col-span-full text-center py-8 text-gray-500">Você não possui nenhum serviço em andamento.</div>`}
+                    </div>`;
+            };
+            
+            const renderNotifications = () => {
+                const panel = document.getElementById('notification-panel');
+                const list = document.getElementById('notification-list');
+                const badge = document.getElementById('notification-badge');
+                const unreadCount = state.notifications.filter(n => !n.read).length;
+                badge.textContent = unreadCount;
+                badge.classList.toggle('hidden', unreadCount === 0);
+                
+                list.innerHTML = state.notifications.length > 0 
+                    ? state.notifications.map(n => `<div class="p-4 border-b hover:bg-gray-50 ${!n.read ? 'bg-blue-50' : ''}"><p class="text-sm">${n.message}</p><p class="text-xs text-gray-500 mt-1">${new Date(n.timestamp).toLocaleString()}</p></div>`).join('')
+                    : `<div class="p-4 text-center text-sm text-gray-500">Nenhuma notificação.</div>`;
+            };
+
+            // --- MODAL RENDERERS ---
+            const openModal = (modalType, data) => {
+                state.activeModal = { type: modalType, data };
+                universalModal.classList.remove('hidden');
+                universalModal.classList.add('flex');
+                let content = '';
+
+                if (modalType === 'budget') content = renderBudgetModal(data.osId, data.step || 1);
+                else if (modalType === 'transfer') content = renderTransferModal(data.osId);
+                else if (modalType === 'dashboardDetails') content = renderDashboardDetailsModal(data.status);
+                
+                modalContent.innerHTML = content;
+                lucide.createIcons({ nodes: [modalContent] });
+                setTimeout(() => modalContent.classList.remove('scale-95', 'opacity-0'), 10);
+            };
+
+            const closeModal = () => {
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    universalModal.classList.add('hidden');
+                    universalModal.classList.remove('flex');
+                    modalContent.innerHTML = '';
+                    state.activeModal = null;
+                }, 300);
+            };
+
+            const renderBudgetModal = (osId, step = 1) => {
+                const os = state.serviceOrders.find(o => o.id == osId);
+                const isAdmin = state.currentUser.role === 'admin';
+                let header = `<div class="flex justify-between items-center p-4 border-b"><h3 class="text-xl font-semibold text-gray-800">Orçamento OS #${osId}</h3><button data-action="close-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button></div>`;
+                let body = '';
+                let footer = '';
+
+                if (step === 1) { // Budget Items
+                    body = `<div class="p-6 max-h-[70vh] overflow-y-auto" id="budget-items-container">
+                        <div class="grid grid-cols-12 gap-2 text-sm font-semibold mb-2 px-2">
+                            <div class="col-span-${isAdmin ? '6' : '11'}">Peça / Serviço</div>
+                            ${isAdmin ? '<div class="col-span-5">Valor</div>' : ''}
+                        </div>
+                        <div id="budget-item-list">
+                            ${os.budget.map((item, index) => `
+                                <div class="grid grid-cols-12 gap-2 mb-2 budget-item-row">
+                                    <div class="col-span-${isAdmin ? '6' : '11'}"><input type="text" data-type="desc" value="${item.desc}" class="w-full border-gray-300 rounded-md shadow-sm text-sm" placeholder="Descrição"></div>
+                                    ${isAdmin ? `<div class="col-span-5"><input type="text" data-type="value" value="${item.value ? 'R$ ' + parseFloat(item.value).toFixed(2).replace('.',',') : ''}" data-action="format-currency" class="w-full border-gray-300 rounded-md shadow-sm text-sm" placeholder="R$ 0,00"></div>` : ''}
+                                    <div class="col-span-1"><button data-action="remove-budget-item" data-index="${index}" class="text-red-500 hover:text-red-700 p-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>`;
+                    footer = `<div class="flex justify-end items-center p-4 border-t bg-gray-50 rounded-b-lg">
+                        <button data-action="close-modal" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg mr-2">Cancelar</button>
+                        <button data-action="budget-next-step" data-os-id="${osId}" data-next-step="2" class="bg-brand-green hover:bg-green-800 text-white font-bold py-2 px-4 rounded-lg">Próximo</button>
+                    </div>`;
+                } else if (step === 2) { // Tests Checklist
+                    body = `<div class="p-6" id="budget-tests-container">
+                        <h4 class="font-semibold mb-4">Checklist de Testes</h4>
+                        <div class="space-y-3">
+                            ${['voo', 'gimbal', 'imagem', 'bateria', 'estabilidade'].map(test => `
+                                <label class="flex items-center"><input type="checkbox" data-test-name="${test}" class="h-4 w-4 rounded" ${os.tests[test] ? 'checked' : ''}> <span class="ml-2 text-sm">Teste de ${test}</span></label>
+                            `).join('')}
+                            <label class="flex items-center"><input type="checkbox" data-test-name="distancia" id="distancia-check" class="h-4 w-4 rounded" ${os.tests.distancia ? 'checked' : ''}> <span class="ml-2 text-sm">Teste de distância</span></label>
+                            <input type="text" id="distancia-input" class="w-full border-gray-300 rounded-md text-sm mt-2 ${!os.tests.distancia ? 'hidden' : ''}" placeholder="Distância em metros" value="${os.tests.distancia_metros || ''}">
+                        </div>
+                    </div>`;
+                     footer = `<div class="flex justify-between items-center p-4 border-t bg-gray-50 rounded-b-lg">
+                        <button data-action="budget-prev-step" data-os-id="${osId}" data-prev-step="1" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">Voltar</button>
+                        <button data-action="budget-next-step" data-os-id="${osId}" data-next-step="3" class="bg-brand-green text-white py-2 px-4 rounded-lg">Próximo</button>
+                    </div>`;
+                } else if (step === 3) { // Video
+                    body = `<div class="p-6" id="budget-video-container"><h4 class="font-semibold mb-4">Foi feito vídeo do teste?</h4><div class="flex gap-4">
+                        <label class="flex items-center"><input type="radio" name="video_test" value="sim" class="h-4 w-4" ${os.tests.video === 'sim' ? 'checked' : ''}> <span class="ml-2 text-sm">Sim</span></label>
+                        <label class="flex items-center"><input type="radio" name="video_test" value="nao" class="h-4 w-4" ${os.tests.video === 'nao' ? 'checked' : ''}> <span class="ml-2 text-sm">Não</span></label>
+                    </div></div>`;
+                    footer = `<div class="flex justify-between items-center p-4 border-t bg-gray-50 rounded-b-lg">
+                        <button data-action="budget-prev-step" data-os-id="${osId}" data-prev-step="2" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-lg">Voltar</button>
+                        <button data-action="send-budget" data-os-id="${osId}" class="bg-brand-orange text-white py-2 px-4 rounded-lg">Enviar Orçamento</button>
+                    </div>`;
+                }
+                return header + body + footer;
+            };
+            
+            const renderTransferModal = (osId) => {
+                const os = state.serviceOrders.find(o => o.id == osId);
+                const users = Object.keys(state.users).filter(u => u !== os.assignedTo);
+                return `
+                    <div class="flex justify-between items-center p-4 border-b"><h3 class="text-xl font-semibold text-gray-800">Transferir OS #${osId}</h3><button data-action="close-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button></div>
+                    <div class="p-6">
+                        <p class="mb-4">Selecione o novo responsável pela OS de <strong>${os.client}</strong>.</p>
+                        <div class="space-y-2">
+                            ${users.map(u => `<button data-action="confirm-transfer" data-os-id="${osId}" data-user-id="${u}" class="w-full text-left p-3 bg-gray-100 hover:bg-gray-200 rounded-md">${state.users[u].name}</button>`).join('')}
+                        </div>
+                    </div>`;
+            };
+
+            const renderDashboardDetailsModal = (status) => {
+                const filteredOrders = state.serviceOrders.filter(os => os.status === status);
+                const groupedByTech = filteredOrders.reduce((acc, os) => {
+                    const tech = os.assignedTo || 'Não Atribuído';
+                    if (!acc[tech]) acc[tech] = [];
+                    acc[tech].push(os);
+                    return acc;
+                }, {});
+
+                return `
+                    <div class="flex justify-between items-center p-4 border-b"><h3 class="text-xl font-semibold text-gray-800">Serviços: ${status}</h3><button data-action="close-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button></div>
+                    <div class="p-6 max-h-[70vh] overflow-y-auto">
+                        ${Object.keys(groupedByTech).map(tech => `
+                            <div class="mb-6">
+                                <h4 class="font-bold mb-2">${tech === 'Não Atribuído' ? tech : state.users[tech].name}</h4>
+                                <div class="space-y-2">
+                                    ${groupedByTech[tech].map(os => `<div class="bg-gray-100 p-3 rounded-md text-sm"><strong>OS #${os.id}</strong> - ${os.client} (${os.equipment})</div>`).join('')}
+                                </div>
+                            </div>
+                        `).join('') || `<p class="text-center text-gray-500 py-8">Nenhum serviço neste status.</p>`}
+                    </div>
+                    <div class="flex justify-end p-4 border-t bg-gray-50"><button data-action="close-modal" class="bg-brand-orange text-white py-2 px-4 rounded-lg">Fechar</button></div>`;
+            };
+
+            // --- ACTION HANDLERS ---
+            const handleLogin = (e) => {
+                e.preventDefault();
+                const username = loginForm.username.value.toLowerCase().trim();
+                const user = state.users[username];
+                if (user && user.password === loginForm.password.value) {
+                    state.currentUser = { username, ...user };
+                    document.getElementById('login-error').classList.add('hidden');
+                    loginPage.classList.add('hidden');
+                    mainApp.classList.remove('hidden');
+                    setupUIForRole(user.role);
+                    lucide.createIcons();
+                } else {
+                    document.getElementById('login-error').classList.remove('hidden');
+                }
+            };
+            
+            const setupUIForRole = (role) => {
+                document.getElementById('user-name').textContent = state.currentUser.name;
+                document.getElementById('user-role').textContent = role === 'admin' ? 'Administrador' : 'Funcionário';
+                document.getElementById('user-avatar').src = `https://i.pravatar.cc/150?u=${state.currentUser.username}`;
+                
+                document.querySelectorAll('.admin-only, .employee-only').forEach(el => el.style.display = 'none');
+                const roleClass = role === 'admin' ? '.admin-only' : '.employee-only';
+                document.querySelectorAll(roleClass).forEach(el => el.style.display = el.tagName === 'A' || el.tagName === 'BUTTON' ? 'flex' : 'block');
+                
+                const initialPage = role === 'admin' ? 'dashboard' : 'ordens';
+                navigateToPage(initialPage);
+            };
+
+            const navigateToPage = (pageId) => {
+                document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+                const activePage = document.getElementById(pageId);
+                if (activePage) activePage.classList.remove('hidden');
+                
+                const activeLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+                document.getElementById('page-title').textContent = activeLink ? activeLink.textContent.trim() : 'Sistema';
+                document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('bg-gray-700/50'));
+                if (activeLink) activeLink.classList.add('bg-gray-700/50');
+                
+                renderAll();
+            };
+
+            // --- EVENT LISTENERS ---
+            loginForm.addEventListener('submit', handleLogin);
+            document.getElementById('logout-button').addEventListener('click', () => window.location.reload());
+            document.getElementById('menu-button').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('-translate-x-full');
+                document.getElementById('sidebar-overlay').classList.toggle('hidden');
+            });
+            document.getElementById('sidebar-overlay').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+                document.getElementById('sidebar-overlay').classList.add('hidden');
+            });
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navigateToPage(link.dataset.page);
+                });
+            });
+            notificationButton.addEventListener('click', () => {
+                notificationPanel.classList.toggle('hidden');
+                if (!notificationPanel.classList.contains('hidden')) {
+                    state.notifications.forEach(n => n.read = true);
+                    renderNotifications();
+                }
+            });
+
+            appContent.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+                const { action, osId, status } = button.dataset;
+                
+                if (action === 'accept-os') {
+                    const os = state.serviceOrders.find(o => o.id == osId);
+                    if (os) {
+                        os.assignedTo = state.currentUser.username;
+                        os.status = 'Em Orçamento';
+                        renderAll();
+                    }
+                }
+                if (action === 'open-budget') openModal('budget', { osId });
+                if (action === 'open-transfer') openModal('transfer', { osId });
+                if (action === 'show-dashboard-details') openModal('dashboardDetails', { status });
+            });
+            
+            universalModal.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (e.target === universalModal || (button && button.dataset.action === 'close-modal')) {
+                    closeModal();
+                }
+                if (!button) return;
+                const { action, osId, nextStep, prevStep, userId } = button.dataset;
+
+                if (action === 'budget-next-step' || action === 'budget-prev-step') {
+                    const os = state.serviceOrders.find(o => o.id == osId);
+                    const currentStep = state.activeModal.data.step;
+                    // Save data from current step before navigating
+                    if (currentStep === 1) {
+                        const items = [];
+                        document.querySelectorAll('.budget-item-row').forEach(row => {
+                            const desc = row.querySelector('input[data-type="desc"]').value;
+                            const valueInput = row.querySelector('input[data-type="value"]');
+                            const value = valueInput ? valueInput.value.replace(/\D/g, '') / 100 : 0;
+                            if (desc) items.push({ desc, value: value.toFixed(2) });
+                        });
+                        os.budget = items;
+                    } else if (currentStep === 2) {
+                        document.querySelectorAll('#budget-tests-container input[type="checkbox"]').forEach(check => {
+                            os.tests[check.dataset.testName] = check.checked;
+                        });
+                        os.tests.distancia_metros = document.getElementById('distancia-input').value;
+                    }
+                    openModal('budget', { osId, step: parseInt(nextStep || prevStep) });
+                }
+                if (action === 'send-budget') {
+                    const os = state.serviceOrders.find(o => o.id == osId);
+                    os.tests.video = document.querySelector('input[name="video_test"]:checked')?.value;
+                    os.status = 'Aguardando Aprovação';
+                    const message = `Orçamento para OS #${osId} (${os.client}) foi enviado por ${state.currentUser.name} e aguarda sua aprovação.`;
+                    Object.keys(state.users).filter(u => state.users[u].role === 'admin').forEach(adminUsername => {
+                        state.notifications.unshift({ message, read: false, timestamp: Date.now() });
+                        if(state.currentUser.username !== adminUsername) showToast(message);
+                    });
+                    renderAll();
+                    closeModal();
+                }
+                if (action === 'confirm-transfer') {
+                    const os = state.serviceOrders.find(o => o.id == osId);
+                    os.assignedTo = userId;
+                    renderAll();
+                    closeModal();
+                }
+            });
+            
+            universalModal.addEventListener('input', (e) => {
+                if (e.target.dataset.action === 'format-currency') {
+                    formatCurrency(e.target);
+                }
+                // Add new budget item row dynamically
+                if (e.target.closest('.budget-item-row') && e.target.closest('#budget-item-list').lastElementChild === e.target.closest('.budget-item-row')) {
+                    const list = document.getElementById('budget-item-list');
+                    const isAdmin = state.currentUser.role === 'admin';
+                    const newRow = document.createElement('div');
+                    newRow.className = 'grid grid-cols-12 gap-2 mb-2 budget-item-row';
+                    newRow.innerHTML = `
+                        <div class="col-span-${isAdmin ? '6' : '11'}"><input type="text" data-type="desc" class="w-full border-gray-300 rounded-md shadow-sm text-sm" placeholder="Descrição"></div>
+                        ${isAdmin ? `<div class="col-span-5"><input type="text" data-type="value" data-action="format-currency" class="w-full border-gray-300 rounded-md shadow-sm text-sm" placeholder="R$ 0,00"></div>` : ''}
+                        <div class="col-span-1"><button data-action="remove-budget-item" class="text-red-500 hover:text-red-700 p-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`;
+                    list.appendChild(newRow);
+                    lucide.createIcons({nodes: [newRow]});
+                }
+            });
+             
+            universalModal.addEventListener('change', (e) => {
+                if (e.target.id === 'distancia-check') {
+                    document.getElementById('distancia-input').classList.toggle('hidden', !e.target.checked);
+                }
+            });
+        });
     </script>
 </body>
 </html>
